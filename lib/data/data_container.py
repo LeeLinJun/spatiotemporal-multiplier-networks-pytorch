@@ -131,9 +131,9 @@ class DataContainer:
         self.dataloader = DataLoader(self.dataset,
                                      batch_size=self.mode_cfg.BATCH_SIZE,
                                      shuffle=self.mode_cfg.SHUFFLE,
-                                     num_workers=4,
+                                     num_workers=32,
                                      collate_fn=custom_collator,
-                                     pin_memory=False,
+                                     pin_memory=True,
                                      drop_last=True,
                                      worker_init_fn=ds_worker_init_fn,
                                      )

@@ -6,10 +6,11 @@ import torch
 from torch.utils.data import Dataset
 from PIL import Image
 from data.temporal_sampling import TemporalSampler
+import numpy as np
 
 
 class UCF101(Dataset):
-    def __init__(self, mode, data_entities, spatial_trans):
+    def __init__(self, mode, data_entities, spatial_trans, subset=1):
         self.mode = mode
         self.annotations_path, self.images_path, self.flows_path = data_entities
         self.spatial_trans = spatial_trans
@@ -23,7 +24,11 @@ class UCF101(Dataset):
         self.class_labels = self.annotations['labels']
         self.annotations = self.annotations['training' if self.mode == 'train' else 'validation']
 
-        self.indices = list(self.annotations.keys())  # [:100]
+        if subset > 1:
+            full_length = len(list(self.annotations.keys()))
+            self.indices = list(np.array(list(self.annotations.keys()))[np.random.permutation(full_length)[:int(full_length/4)]])  # [:100]
+        else:
+            self.indices = list(self.annotations.keys())
         if self.mode == 'valid':  # these have inconsistent video size so avoids mini-batching at validation
             for i in ['v_PommelHorse_g05_c01', 'v_PommelHorse_g05_c02',
                       'v_PommelHorse_g05_c03', 'v_PommelHorse_g05_c04']:

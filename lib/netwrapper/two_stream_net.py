@@ -40,6 +40,7 @@ class TwoStreamNet(nn.Module):
         self.setup_optimizer()
 
     def create_load(self, device):
+        print('creating load')
         if cfg.PRETRAINED_MODE == 'ImageNet':
             self.create_net(imagenet_pretrained=True)
             self.init_temporal_convolution()
@@ -162,6 +163,7 @@ class TwoStreamNet(nn.Module):
             ).init_temporal(cfg.RST.INIT_TEMPORAL_STRATEGY)
 
     def setup_optimizer(self):
+        print('setting up optimizer...')
         self.criterion = nn.CrossEntropyLoss()
 
         self.optimizer = optim.SGD(params=self.parameters(),

@@ -9,6 +9,7 @@ from validator import Validator
 import torch
 from tensorboardX import SummaryWriter
 from netwrapper.two_stream_net import TwoStreamNet
+from tqdm import tqdm
 
 started_time = time.time()
 
@@ -67,13 +68,17 @@ class EpochLoop:
         self.run()
 
     def create_sets(self):
+        print('creating training sets...')
         self.trainer = Trainer('train', cfg.METERS, self.device) if cfg.TRAINING else None
+        print('creating validation sets...')
         self.validator = Validator('valid', cfg.METERS, self.device) if cfg.VALIDATING else None
 
     def setup_net(self):
+        print('setup nets...')
         self.net = TwoStreamNet(self.device)
 
     def run(self):
+        print('running...')
         if cfg.TRAINING:
             self.trainer_epoch_loop()
         elif cfg.VALIDATING:
@@ -84,7 +89,7 @@ class EpochLoop:
             raise NotImplementedError('One of {TRAINING, VALIDATING, TESTING} must be set to True')
 
     def trainer_epoch_loop(self):
-        for e in range(cfg.NUM_EPOCH):
+        for e in tqdm(range(cfg.NUM_EPOCH)):
             self.trainer.set_net_mode(self.net)
 
             self.trainer.reset_meters()
