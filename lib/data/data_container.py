@@ -6,7 +6,9 @@ import datetime
 import numpy as np
 from torch.utils.data import DataLoader
 import torch.utils.data
-from data.data_set import UCF101
+# from data.data_set import UCF101
+from data.ucf_preprocess import UCF101
+
 import data.spatial_transformation as Transformation
 
 numpy_type_map = {
@@ -131,7 +133,7 @@ class DataContainer:
         self.dataloader = DataLoader(self.dataset,
                                      batch_size=self.mode_cfg.BATCH_SIZE,
                                      shuffle=self.mode_cfg.SHUFFLE,
-                                     num_workers=32,
+                                     num_workers=8,
                                      collate_fn=custom_collator,
                                      pin_memory=True,
                                      drop_last=True,

@@ -43,48 +43,14 @@ class UCF101(Dataset):
         self.images_only, self.flows_only = True, True
 
     def __getitem__(self, index):
-        import gc
-
-        uv = ['u', 'v']
+        images = np.load('/home/srip19-pointcloud/linjun/st-net/spatiotemporal-multiplier-networks-pytorch/dataset/preprocess/{}/{}_images.npy'.format(self.mode, index), allow_pickle=True)
+        flows = np.load('/home/srip19-pointcloud/linjun/st-net/spatiotemporal-multiplier-networks-pytorch/dataset/preprocess/{}/{}_flows.npy'.format(self.mode, index), allow_pickle=True)
+#         i_annotation = np.load('/home/srip19-pointcloud/linjun/st-net/spatiotemporal-multiplier-networks-pytorch/dataset/preprocess/{}/{}_annotation.npy'.format(self.mode, index), allow_pickle=True)
+#         print(images, flows, i_annotation)
         key = self.indices[index]
         i_annotation = copy(self.annotations[key])
         nframes = i_annotation['nframes']
         i_annotation['label'] -= 1  # Fix MATLAB indexing for labels
-        i_image_path = os.path.join(self.images_path, key)
-        i_flow_path = self.flows_path
-
-        images_list, flows_list = self.temporal_sampler.generate(key, nframes)
-
-        images = self.load_images_list(images_list, i_image_path)
-        assert min(images[0].size) == 256
-        flows = self.load_flows_list(flows_list, i_flow_path)
-        assert min(flows[0][0].size) == 256
-
-        if cfg.RST.FRAME_RANDOMIZATION:
-            for i in images:
-                self.spatial_trans.randomize_parameters()
-                images.append(self.spatial_trans(i, 'image'))
-            for i in flows:
-                of = []
-                self.spatial_trans.randomize_parameters()
-                for k, j in enumerate(i):
-                    of.append(self.spatial_trans(j, 'flow_{}'.format(uv[k % 2])))
-                flows.append(of)
-        else:
-            self.spatial_trans.randomize_parameters()
-            images = [self.spatial_trans(i, 'image') for i in images]
-            flows = [[
-                self.spatial_trans(j, 'flow_{}'.format(uv[k % 2])) for k, j in enumerate(i)
-            ] for i in flows]
-
-        images, flows = self.pack_frames(images, flows)
-        
-        gc.collect()
-        
-#         np.save('/home/srip19-pointcloud/linjun/st-net/spatiotemporal-multiplier-networks-pytorch/dataset/preprocess/{}/{}_images.npy'.format(self.mode, index), images)
-#         np.save('/home/srip19-pointcloud/linjun/st-net/spatiotemporal-multiplier-networks-pytorch/dataset/preprocess/{}/{}_flows.npy'.format(self.mode, index), flows)
-#         np.save('/home/srip19-pointcloud/linjun/st-net/spatiotemporal-multiplier-networks-pytorch/dataset/preprocess/{}/{}_annotation.npy'.format(self.mode, index), i_annotation)
-
         return images, flows, i_annotation
 
     def __len__(self):
@@ -93,7 +59,6 @@ class UCF101(Dataset):
     @staticmethod
     def load_images_list(images_list, image_path):
         images = [Image.open(os.path.join(image_path, i)) for i in images_list]
-
         return images
 
     @staticmethod

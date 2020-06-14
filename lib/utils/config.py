@@ -123,7 +123,7 @@ if __C.TRAINING:
     __C.TRAIN = edict()
 
     # Images to use per minibatch
-    __C.TRAIN.BATCH_SIZE = 8
+    __C.TRAIN.BATCH_SIZE = 16 
 
     # Shuffle the dataset
     __C.TRAIN.SHUFFLE = True
@@ -144,7 +144,7 @@ if __C.VALIDATING:
     __C.VALID = edict()
 
     # Images to use per minibatch
-    __C.VALID.BATCH_SIZE = 1#__C.TRAIN.BATCH_SIZE
+    __C.VALID.BATCH_SIZE = 8#__C.TRAIN.BATCH_SIZE
 
     # Shuffle the dataset
     __C.VALID.SHUFFLE = False
