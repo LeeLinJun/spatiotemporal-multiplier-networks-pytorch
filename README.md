@@ -3,7 +3,6 @@
 This is a PyTorch implementation of the "Spatiotemporal Multiplier Networks for Video Action Recognition" paper by Christoph Feichtenhofer, Axel Pinz, Richard P. Wildes published in CVPR 2017. The official code released by Christoph can be found [here](https://github.com/feichtenhofer/st-resnet).
 
 ## Contents
-
 1. [Introduction](#introduction)
 2. [Installation](#installation)
 3. [Pre-trained Base Networks](#pre-trained-base-networks)
@@ -90,5 +89,6 @@ You can use the tools/test.py to start testing the network by loading a custom n
 ### Configuration File
 All of the configuration hyperparameters are set in the lib/utils/config.py. If you want to change them permanently, simply edit the file with the settings you would like to. Otherwise, use the approaches mentioned above to temporary change them.
 
-## Experimental Results
-This section will be updated with preliminary results soon.
+
+## Results
+The validation results and live demo written by jupyter could be found in tools/.
